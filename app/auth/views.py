@@ -41,7 +41,7 @@ def register():
         send_email(user.email, 'Confirm Your Account',
                    'auth/email/confirm', user=user, token=token)
         flash('A confirmation email has been sent to you by email.')
-        return redirect(url_for('main.login'))
+        return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
 
@@ -54,7 +54,7 @@ def confirm(token):
         flash('You have confirmed your account. Thanks!')
     else:
         flash('The confirmation link is invalid or has expired.')
-    redirect(url_for('main.index'))
+    return redirect(url_for('main.index'))
 
 
 @auth.route('/confirm')
@@ -77,6 +77,6 @@ def before_request():
 
 @auth.route('/unconfirmed')
 def unconfirmed():
-    if current_user.is_anonymous() or current_user.confirmed:
-        return redirect('main.index')
-    return redirect('auth.unconfirmed.html')
+    if current_user.is_anonymous or current_user.confirmed:
+        return redirect(url_for('main.index'))
+    return redirect('auth/unconfirmed.html')
