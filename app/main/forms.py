@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, BooleanField, SelectField,\
+from wtforms import StringField, TextAreaField, BooleanField, SelectField, \
     SubmitField
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from wtforms import ValidationError
@@ -23,8 +23,8 @@ class EditProfileAdminForm(FlaskForm):
                                              Email()])
     username = StringField('Username', validators=[
         DataRequired(), Length(1, 64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,
-                                          'Usernames must have only letters, '
-                                          'numbers, dots or underscores')])
+                                              'Usernames must have only letters, '
+                                              'numbers, dots or underscores')])
     confirmed = BooleanField('Confirmed')
     role = SelectField('Role', coerce=int)
     name = StringField('Real name', validators=[Length(0, 64)])
@@ -47,3 +47,8 @@ class EditProfileAdminForm(FlaskForm):
         if field.data != self.user.username and \
                 User.query.filter_by(username=field.data).first():
             raise ValidationError('Username already in use.')
+
+
+class PostForm(FlaskForm):
+    body = TextAreaField("What's on your mind?", validators=[DataRequired()])
+    submit = SubmitField('Submit')
