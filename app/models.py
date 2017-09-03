@@ -17,7 +17,6 @@ class Post(db.Model):
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     body_html = db.Column(db.Text)
 
-
     @staticmethod
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
@@ -26,7 +25,6 @@ class Post(db.Model):
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
-
 
     @staticmethod
     def generate_fake(count=100):
@@ -42,6 +40,7 @@ class Post(db.Model):
                      author=u)
             db.session.add(p)
             db.session.commit()
+
 
 db.event.listen(Post.body, 'set', Post.on_changed_body)
 
@@ -182,7 +181,7 @@ class User(UserMixin, db.Model):
 
     def can(self, permissions):
         return self.role is not None and (
-            self.role.permissions & permissions) == permissions
+                                             self.role.permissions & permissions) == permissions
 
     def is_administrator(self):
         return self.can(Permission.ADMINISTER)
@@ -238,5 +237,6 @@ class AnonymousUser(AnonymousUserMixin):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
 
 login_manager.anonymous_user = AnonymousUser
