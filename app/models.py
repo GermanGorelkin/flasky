@@ -237,6 +237,11 @@ class User(UserMixin, db.Model):
         if f:
             db.session.delete(f)
 
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id == Post.author_id)\
+            .filter(Follow.follower_id == self.id)
+
     @staticmethod
     def generate_fake(count=100):
         from sqlalchemy.exc import IntegrityError
